@@ -16,5 +16,12 @@ public class Cell {
         cellBrain = new Brain(cellGenome.getGenes);
     }
 
-    
+    public int getX() {
+        return posX;
+    }
+
+    public int getY() {
+        return posY;
+    }
+
 }
