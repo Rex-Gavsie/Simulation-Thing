@@ -37,7 +37,7 @@ public class displayWorld extends JPanel {
             for (Cell cell : row) {
                 if (cell != null) {    
                     graph.draw(new Ellipse2D.Double(marg+(y*(cell.getX()+0.25)), (height-marg)-(y*(cell.getY()+0.75)), y/2, y/2));
-                    //System.out.println("Printed at (" + cell.getX() + ", " + cell.getY() + ")");
+                    System.out.println("Printed at (" + cell.getX() + ", " + cell.getY() + ")");
                 }
             }
         }

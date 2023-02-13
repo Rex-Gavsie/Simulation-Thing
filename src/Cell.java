@@ -6,6 +6,7 @@ public class Cell {
     * Genome class to handle more complex genome stuff later on
     * Brain class (initialized after genome class and is then just past the info from the genome class)
      */
+
     private int posX, posY, birthTime;
     private Genome cellGenome;
     private Brain cellBrain;
@@ -27,8 +28,6 @@ public class Cell {
     public int getY() {
         return posY;
     }
-
-    
 
     /**
      *                  --Inputs--

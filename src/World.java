@@ -56,5 +56,6 @@ public class World {
             }
             System.out.println("Row: " + row + " | Cells: " + numInRow);
         }*/
+
     }
 }
