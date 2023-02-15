@@ -44,6 +44,28 @@ public class World {
         }
     }
 
+    public boolean nothingAtXY(int posX, int posY) {
+        if (this.cellsInWorld[posY-1][posX-1] == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public void moveCell(Cell cell, int xNew, int yNew) {
+        if (nothingAtXY(xNew, yNew)) {
+            int xOld = cell.getX();
+            int yOld = cell.getY();
+            this.cellsInWorld[yNew-1][xNew-1] = cell;
+            if (nothingAtXY(xOld, yOld)) {
+                throw new NullPointerException("AAAAAAAAAAAAAAAAA");
+            }
+            this.cellsInWorld[yOld-1][xOld-1] = null;
+        }
+        else {
+            throw new IllegalArgumentException("There's already a cell there!");
+        }
+    }
+
     public static void main(String[] args) {
         World thisWorld = new World(128, 128, 3000, "Steve", 2);
         displayWorld.displayThisWorld(thisWorld);

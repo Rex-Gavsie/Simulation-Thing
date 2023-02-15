@@ -5,12 +5,13 @@ public class Brain {
     * TO BE IMPLEMENTED
      */
     int placeholder;
+    Cell holderCell;
     /**
     * @param inputGenome stores the input genome
     * 
     * Should initialize a neural net with connections/tendencies based on the genome
      */
-    public Brain(ArrayList<String> inputGenome) {
+    public Brain(Cell inputCell, ArrayList<String> inputGenome) {
         
     }
 }

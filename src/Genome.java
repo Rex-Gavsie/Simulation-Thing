@@ -18,16 +18,15 @@ public class Genome {
             genes.add(inputGeneList.get(i));
         }
     }
-
-    public ArrayList<String> getGenes() {
-        return genes;
-    }
-
     
     public static ArrayList<String> generateRandomGenome(int numOfGenes) {
         ArrayList<String> placeholderGenome = new ArrayList<String>();
         placeholderGenome.add("aaaaa");
         placeholderGenome.add("bbbbb");
         return placeholderGenome;
+    }
+
+    public static String mutateGene(String inputGene) {
+        return null;
     }
 }

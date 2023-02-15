@@ -18,7 +18,7 @@ public class Cell {
         cellWorld = inputWorld;
         birthTime = cellWorld.cTime;
         cellGenome = new Genome(inputGenome, inputMutationF);
-        cellBrain = new Brain(cellGenome.getGenes());
+        cellBrain = new Brain(this, cellGenome.genes);
     }
 
     public int getX() {
@@ -29,14 +29,140 @@ public class Cell {
         return posY;
     }
 
+    /** ------------SENSORS-------------------*/
+    /* Movement Sensors */
+
+    public int aboveSightDist() {
+        int distanceAbove = 0;
+        for (int i=posY-1; i>0; i--) {
+            if (cellWorld.nothingAtXY(posX, i)) {
+                distanceAbove++;
+            }
+            else {
+                return distanceAbove;
+            }
+        }
+        return distanceAbove;
+    }
+
+    public int belowSightDist() {
+        int distanceBelow = 0;
+        for (int i=posY+1; i<=cellWorld.sizeY; i++) {
+            if (cellWorld.nothingAtXY(posX, i)) {
+                distanceBelow++;
+            }
+            else {
+                return distanceBelow;
+            }
+        }
+        return distanceBelow;
+    }
+
+    public int leftSightDist() {
+        int distanceLeft = 0;
+        for (int i=posX-1; i>0; i--) {
+            if (cellWorld.nothingAtXY(i, posY)) {
+                distanceLeft++;
+            }
+            else {
+                return distanceLeft;
+            }
+        }
+        return distanceLeft;
+    }
+
+    public int rightSightDist() {
+        int distanceRight = 0;
+        for (int i=posX+1; i<=cellWorld.sizeX; i--) {
+            if (cellWorld.nothingAtXY(i, posY)) {
+                distanceRight++;
+            }
+            else {
+                return distanceRight;
+            }
+        }
+        return distanceRight;
+    }
+
+    /* Time Sensors */
+
+    public int cellTimeExternal() {
+        return cellWorld.cTime;
+    }
+    
+    public int cellTimeInternal() {
+        return (cellWorld.cTime-birthTime);
+    }
+
+    /* Border Distance Sensors */
+
+    public int leftBorderDist() {
+        return(posX-1);
+    }
+    
+    public int rightBorderDist() {
+        return(cellWorld.sizeX-posX);
+    }
+
+    public int topBorderDist() {
+        return(posY-1);
+    }
+
+    public int botBorderDist() {
+        return(cellWorld.sizeY-posY);
+    }
+
+    /** ------------OUTPUTS------------------- */
+    /* Movement */
+
+    public void moveUp() {
+        try {
+            cellWorld.moveCell(this, posX, posY-1);
+        }
+        catch(Exception IllegalArgumentException) {
+            throw IllegalArgumentException;
+        }
+        this.posY=posY-1;
+    }
+
+    public void moveDown() {
+        try {
+            cellWorld.moveCell(this, posX, posY+1);
+        }
+        catch(Exception IllegalArgumentException) {
+            throw IllegalArgumentException;
+        }
+        this.posY=posY+1;
+    }
+
+    public void moveLeft() {
+        try {
+            cellWorld.moveCell(this, posX-1, posY);
+        }
+        catch(Exception IllegalArgumentException) {
+            throw IllegalArgumentException;
+        }
+        this.posY=posX-1;
+    }
+
+    public void moveRight() {
+        try {
+            cellWorld.moveCell(this, posX+1, posY);
+        }
+        catch(Exception IllegalArgumentException) {
+            throw IllegalArgumentException;
+        }
+        this.posY=posY+1;
+    }
+
     /**
      *                  --Inputs--
-     * Open Space Above (Vision) @param aboveSightDist
-     * Open Space Left (Vision) @param leftSightDist
-     * Open Space Right (Vision) @param rightSightDist
-     * Open Space Below (Vision) @param belowSightDist
+     * Open Space Above (Vision) @param aboveSightDist IMPLEMENTED
+     * Open Space Left (Vision) @param leftSightDist IMPLEMENTED
+     * Open Scpace Right (Vision) @param rightSightDist IMPLEMENTED
+     * Open Space Below (Vision) @param belowSightDist IMPLEMENTED
      *  
-     * Internal Clock (Time) @param cellTimeInternal
+     * Age (Time) @param cellTimeInternal
      * External Clock (Time) @param cTimeExternal
      * 
      * Distance to Left Border (Spatial) @param leftBorderDist
