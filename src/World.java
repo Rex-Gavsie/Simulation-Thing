@@ -6,22 +6,32 @@ public class World {
     public double mutationFactor; //Probability of a mutation (eg. 0.1 is 10%)
     public Cell[][] cellsInWorld; //2D Array List of Cells
     public String worldTitle;
+    public int activationFunctionSelect;
+    public Random worldRandom;
+    public int nothingAtExceptionCount;
 
     public World(int inputX, int inputY, int startPopulation, String title, int inputGeneNum) {
+        //Verify legal inputs
+        if (inputX*inputY < startPopulation) {
+            throw new IllegalArgumentException("Population is greater than area");
+        }
+
         cellsInWorld = new Cell[inputY][inputX];
         worldTitle = title;
         sizeX = inputX;
         sizeY = inputY;
         numOfGenes = inputGeneNum;
         pop = startPopulation;
+        activationFunctionSelect = 0;
+        worldRandom = new Random();
+        nothingAtExceptionCount = 0;
         /*
          * Making cells based on the population number
          */
         
         for (int i = 1; i <= startPopulation; i++) {
             try {
-                Random rand = new Random();
-                addCell(rand.nextInt(0, inputX), rand.nextInt(0,inputY), Genome.generateRandomGenome(numOfGenes));
+                addCell(worldRandom.nextInt(1, inputX+1), worldRandom.nextInt(1,inputY+1), Genome.generateRandomGenome(numOfGenes));
             }
             catch(Exception IllegalArgumentException) {
                 i--;
@@ -34,7 +44,7 @@ public class World {
 
     public void addCell(int startX, int startY, ArrayList<String> inputGenome) {
         Cell newCell = new Cell(startX, startY, inputGenome, this, mutationFactor);
-        if (this.cellsInWorld[newCell.getY()-1][newCell.getX()-1] == null) {
+        if (nothingAtXY(newCell.getX(), newCell.getY())) {
             this.cellsInWorld[newCell.getY()-1][newCell.getX()-1] = newCell;
         }
         else {
@@ -48,6 +58,7 @@ public class World {
         if (this.cellsInWorld[posY-1][posX-1] == null) {
             return true;
         }
+        nothingAtExceptionCount++;
         return false;
     }
 
@@ -67,7 +78,8 @@ public class World {
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(128, 128, 3000, "Steve", 2);
+        World thisWorld = new World(10, 10, 100, "Steve", 2);
+        //System.out.println(thisWorld.nothingAtExceptionCount);
         displayWorld.displayThisWorld(thisWorld);
         /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
             int numInRow=0;

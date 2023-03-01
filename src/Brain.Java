@@ -4,14 +4,15 @@ public class Brain {
     /** The Neural Net of a cell
     * TO BE IMPLEMENTED
      */
-    int placeholder;
-    Cell holderCell;
+    private Genome genomeOfBrain;
+    private Cell cellOfBrain;
     /**
     * @param inputGenome stores the input genome
     * 
     * Should initialize a neural net with connections/tendencies based on the genome
      */
-    public Brain(Cell inputCell, ArrayList<String> inputGenome) {
-        
+    public Brain(Cell inputCell, Genome inputGenome) {
+        cellOfBrain = inputCell;
+        genomeOfBrain = inputGenome;
     }
 }

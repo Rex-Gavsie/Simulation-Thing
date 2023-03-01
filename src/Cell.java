@@ -10,15 +10,15 @@ public class Cell {
     private int posX, posY, birthTime;
     private Genome cellGenome;
     private Brain cellBrain;
-    private World cellWorld;
+    public World cellWorld;
 
     public Cell(int startX, int startY, ArrayList<String> inputGenome, World inputWorld, double inputMutationF) {
         posX = startX;
         posY = startY;
         cellWorld = inputWorld;
         birthTime = cellWorld.cTime;
-        cellGenome = new Genome(inputGenome, inputMutationF);
-        cellBrain = new Brain(this, cellGenome.genes);
+        cellGenome = new Genome(this, inputGenome, inputMutationF);
+        cellBrain = new Brain(this, cellGenome);
     }
 
     public int getX() {
@@ -90,7 +90,7 @@ public class Cell {
         return cellWorld.cTime;
     }
     
-    public int cellTimeInternal() {
+    public int cellTimeInternal() { // Age kinda, maybe I change how this one works later?
         return (cellWorld.cTime-birthTime);
     }
 
