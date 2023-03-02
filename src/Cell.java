@@ -8,17 +8,21 @@ public class Cell {
      */
 
     private int posX, posY, birthTime;
+    public int numInputSensors, numOutputs, hiddenNuerons;
     private Genome cellGenome;
     private Brain cellBrain;
     public World cellWorld;
 
-    public Cell(int startX, int startY, ArrayList<String> inputGenome, World inputWorld, double inputMutationF) {
+    public Cell(int startX, int startY, ArrayList<String> inputGenome, World inputWorld, double inputMutationF, int numHiddenNuerons) {
         posX = startX;
         posY = startY;
         cellWorld = inputWorld;
         birthTime = cellWorld.cTime;
         cellGenome = new Genome(this, inputGenome, inputMutationF);
         cellBrain = new Brain(this, cellGenome);
+        numInputSensors = 10; //MANUALLY SET
+        hiddenNuerons = numHiddenNuerons;
+        numOutputs = 4; //MANUALLY SET
     }
 
     public int getX() {

@@ -9,8 +9,9 @@ public class World {
     public int activationFunctionSelect;
     public Random worldRandom;
     public int nothingAtExceptionCount;
+    public int worldHiddenNueronCount;
 
-    public World(int inputX, int inputY, int startPopulation, String title, int inputGeneNum) {
+    public World(int inputX, int inputY, int startPopulation, String title, int inputGeneNum, int hiddenNueronInput) {
         //Verify legal inputs
         if (inputX*inputY < startPopulation) {
             throw new IllegalArgumentException("Population is greater than area");
@@ -25,6 +26,7 @@ public class World {
         activationFunctionSelect = 0;
         worldRandom = new Random();
         nothingAtExceptionCount = 0;
+        worldHiddenNueronCount = hiddenNueronInput;
         /*
          * Making cells based on the population number
          */
@@ -43,7 +45,7 @@ public class World {
     }
 
     public void addCell(int startX, int startY, ArrayList<String> inputGenome) {
-        Cell newCell = new Cell(startX, startY, inputGenome, this, mutationFactor);
+        Cell newCell = new Cell(startX, startY, inputGenome, this, mutationFactor, worldHiddenNueronCount);
         if (nothingAtXY(newCell.getX(), newCell.getY())) {
             this.cellsInWorld[newCell.getY()-1][newCell.getX()-1] = newCell;
         }
@@ -78,7 +80,7 @@ public class World {
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 100, "Steve", 2);
+        World thisWorld = new World(10, 10, 100, "Steve", 2, 2);
         //System.out.println(thisWorld.nothingAtExceptionCount);
         displayWorld.displayThisWorld(thisWorld);
         /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
