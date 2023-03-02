@@ -79,8 +79,13 @@ public class World {
         }
     }
 
+    public void changeNewCellHiddenNuerons(int newNum) {
+        worldHiddenNueronCount = newNum; 
+    }
+
     public static void main(String[] args) {
         World thisWorld = new World(10, 10, 100, "Steve", 2, 2);
+        
         //System.out.println(thisWorld.nothingAtExceptionCount);
         displayWorld.displayThisWorld(thisWorld);
         /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {

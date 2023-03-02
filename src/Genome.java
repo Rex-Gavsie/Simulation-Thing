@@ -75,22 +75,22 @@ public class Genome {
  * 00000000
  * output neuron, found by value modulo number of inputs/outputs/hidden layers
  * Output Neuron MUST not equal input neuron
- * 
- * Bit 17
- * 0
- * Correlation 
- * If == 0, negative correlation
- * if == 1, positive correlation
- * 
- * Bit 18-25
+ *  
+ * Bits 17-24
  * 00000000
  * Strength of Connection
  * Is found by Value /(Maximum Value*0.25)
  * Is multiplied by the input value to pass to the output neuron 
  * 
- * Bit 26-32
+ * Bit 25-31
  * 0000000
  * Bias
  * 2s compliment
  * Is found by Value / (Maximum Value*0.25) 
+ * 
+ * Bit 32
+ * Correlation 
+ * If == 0, negative correlation
+ * if == 1, positive correlation
+ *
  */
