@@ -83,10 +83,22 @@ public class World {
         worldHiddenNueronCount = newNum; 
     }
 
+    public void worldTimestep() {
+        Cell[][] savedCellsInWorld = cellsInWorld; //Ideally freeze the list of cells in the world
+        for (int i = 0; i < savedCellsInWorld.length; i++) {
+            for (int j = 0; j < savedCellsInWorld[i].length; i++) {
+                savedCellsInWorld[i][j].cellTimestep();
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 100, "Steve", 2, 2);
-        
+        World thisWorld = new World(10, 10, 10, "Steve", 2, 2);
         //System.out.println(thisWorld.nothingAtExceptionCount);
+        displayWorld.displayThisWorld(thisWorld);
+        thisWorld.worldTimestep();
+        displayWorld.displayThisWorld(thisWorld);
+        thisWorld.worldTimestep();
         displayWorld.displayThisWorld(thisWorld);
         /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
             int numInRow=0;

@@ -33,6 +33,14 @@ public class Cell {
         return posY;
     }
 
+    /**
+     * Cell Functions
+     */
+
+    public void cellTimestep() {
+        cellBrain.brainTimestep();
+    }
+    
     /** ------------SENSORS-------------------*/
     /* Movement Sensors */
 

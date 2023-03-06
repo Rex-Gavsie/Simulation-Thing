@@ -293,7 +293,8 @@ public class Brain {
         //PLACE FOR ANY DATA COLLECTION
 
 
-        //End and throw a confirmation
+        //End and ideally give a confirmation
+
     }
     
     }
