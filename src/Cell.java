@@ -36,7 +36,7 @@ public class Cell {
     /** ------------SENSORS-------------------*/
     /* Movement Sensors */
 
-    public int aboveSightDist() {
+    private int aboveSightDist() {
         int distanceAbove = 0;
         for (int i=posY-1; i>0; i--) {
             if (cellWorld.nothingAtXY(posX, i)) {
@@ -49,7 +49,7 @@ public class Cell {
         return distanceAbove;
     }
 
-    public int belowSightDist() {
+    private int belowSightDist() {
         int distanceBelow = 0;
         for (int i=posY+1; i<=cellWorld.sizeY; i++) {
             if (cellWorld.nothingAtXY(posX, i)) {
@@ -62,7 +62,7 @@ public class Cell {
         return distanceBelow;
     }
 
-    public int leftSightDist() {
+    private int leftSightDist() {
         int distanceLeft = 0;
         for (int i=posX-1; i>0; i--) {
             if (cellWorld.nothingAtXY(i, posY)) {
@@ -75,7 +75,7 @@ public class Cell {
         return distanceLeft;
     }
 
-    public int rightSightDist() {
+    private int rightSightDist() {
         int distanceRight = 0;
         for (int i=posX+1; i<=cellWorld.sizeX; i--) {
             if (cellWorld.nothingAtXY(i, posY)) {
@@ -90,11 +90,11 @@ public class Cell {
 
     /* Time Sensors */
 
-    public int cellTimeExternal() {
+    private int cellTimeExternal() {
         return cellWorld.cTime;
     }
     
-    public int cellTimeInternal() { // Age kinda, maybe I change how this one works later?
+    private int cellTimeInternal() { // Age kinda, maybe I change how this one works later?
         return (cellWorld.cTime-birthTime);
     }
 
@@ -116,6 +116,48 @@ public class Cell {
         return(cellWorld.sizeY-posY);
     }
 
+    /**
+     * 
+     * @param sensorIndexInput
+     * <p> 0 - Above Sight Distance
+     * <p> 1 - Below Sight Distance
+     * <p> 2 - Left Sight Distance
+     * <p> 3 - Right Sight Distance
+     * <p> 4 - External Time
+     * <p> 5 - Internal 
+     * <p> 6 - Top Border Distance
+     * <p> 7 - Bottom Border Distance
+     * <p> 8 - Left Border Distance
+     * <p> 9 - Right Border Distance
+     * @return Sensor Output
+     */
+    public int callSensor(int sensorIndexInput) {
+        switch (sensorIndexInput) {
+            case 0:
+                return aboveSightDist();
+            case 1:
+                return belowSightDist();
+            case 2:
+                return leftSightDist();
+            case 3:
+                return rightSightDist();
+            case 4:
+                return cellTimeExternal();
+            case 5:
+                return cellTimeInternal();
+            case 6:
+                return topBorderDist();
+            case 7:
+                return botBorderDist();
+            case 8:
+                return leftBorderDist();
+            case 9:
+                return rightBorderDist();
+            default:
+                throw new IndexOutOfBoundsException("Not a valid sensor");
+        }
+    }
+    
     /** ------------OUTPUTS------------------- */
     /* Movement */
 
@@ -157,6 +199,33 @@ public class Cell {
             throw IllegalArgumentException;
         }
         this.posY=posY+1;
+    }
+
+    /**
+     * 
+     * @param outputIndex
+     * <p> 0 - Move up
+     * <p> 1 - Move Down
+     * <p> 2 - Move Left
+     * <p> 3 - Move Right
+     */
+    public void doOutput(int outputIndex) {
+        switch (outputIndex) {
+            case 0:
+                moveUp();
+                break;
+            case 1:
+                moveDown();
+                break;
+            case 2:
+                moveLeft();
+                break;
+            case 3: 
+                moveRight();
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Not a valid output");
+        }
     }
 
     /**

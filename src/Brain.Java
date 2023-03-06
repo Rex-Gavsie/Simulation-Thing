@@ -1,4 +1,3 @@
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,8 @@ public class Brain {
      */
     private Genome genomeOfBrain;
     private Cell cellOfBrain;
-    private int[] inputNuerons, hiddenNuerons, outputNuerons;
+    private double[] inputNuerons, hiddenNuerons, outputNuerons; //min int value Indicates an out of use nueron, otherwise every timestep it will call the inputs from the cell to update it and then call the outputs that it chooses
+    private boolean arraysInitialized = false; //Stops us from minimizing the arrays after initialization
     private ArrayList<NueronConnection> connectionList = new ArrayList<NueronConnection>();
 
     /**
@@ -19,10 +19,45 @@ public class Brain {
     public Brain(Cell inputCell, Genome inputGenome) {
         cellOfBrain = inputCell;
         genomeOfBrain = inputGenome;
-        inputNuerons = new int[cellOfBrain.numInputSensors];
-        hiddenNuerons = new int[cellOfBrain.numHiddenNuerons];
-        outputNuerons = new int[cellOfBrain.numOutputs];
-        parseGenome(genomeOfBrain);
+        inputNuerons = new double[cellOfBrain.numInputSensors];
+        hiddenNuerons = new double[cellOfBrain.numHiddenNuerons];
+        outputNuerons = new double[cellOfBrain.numOutputs];
+        minAllNueronArrays(); //Minimize all arrays
+        parseGenome(genomeOfBrain); //Parse the genome and create connections
+        specifyUsableIO(); //Sets all in-use nuerons to 0
+    }
+    
+    /**
+     * Intialization Methods -----------------------------------
+     */
+    private void minAllNueronArrays() {
+        if (arraysInitialized == true) {
+            throw new IllegalCallerException("Arrays already minimized");
+        } else {
+            boolean inputDone = false;
+            boolean hiddenDone = false;
+            boolean outputDone = false;
+            for (int i = 0; i < Math.max(inputNuerons.length, Math.max(hiddenNuerons.length, outputNuerons.length)); i++) {
+                //Inputs
+                if (inputDone == false && inputNuerons.length - i > 0) {
+                    inputNuerons[i] = Integer.MIN_VALUE;
+                } else {
+                    inputDone = true;
+                }
+                //Hidden
+                if (hiddenDone == false && hiddenNuerons.length - i > 0) {
+                    hiddenNuerons[i] = Integer.MIN_VALUE;
+                } else {
+                    hiddenDone = true;
+                }
+                //Outputs
+                if (outputDone == false && outputNuerons.length - i > 0) {
+                    outputNuerons[i] = Integer.MIN_VALUE;
+                } else {
+                    outputDone = true;
+                }
+            }
+        }
     }
 
     private void parseGenome(Genome genome) {
@@ -37,24 +72,24 @@ public class Brain {
             Double bias = 1.0;
 
             //Setting constants
-            final Double max8BitBinaryInDecimalOver4 = 63.75;
-            final Double max6BitBinaryInDecimalOver4 = 15.75;
-            final int max7BitInteger = 64;
+            final Double MAX8BITBINARYOVER4 = 63.75;
+            final Double MAX6BITBINARYOVER4 = 15.75;
+            final int BINARY7TH = 64;
 
             // Finding the nuerons being connected
             int[] startInfo = findNueronIndex(hexStart, 0);
             int[] endInfo = findNueronIndex(hexEnd, 1);
 
             //Get weight
-            weight = (double)(Integer.parseInt(hexWeight,16))/max8BitBinaryInDecimalOver4;
+            weight = (double)(Integer.parseInt(hexWeight,16))/MAX8BITBINARYOVER4;
 
             //Bias is using two's complement so I'm going to do some preprocessing first to make sure the range is the same
-            bias = (double)((max7BitInteger*Integer.parseInt(bcBinary.substring(0,1)))-Integer.parseInt(bcBinary.substring(1,7), 2));
+            bias = (double)((BINARY7TH*Integer.parseInt(bcBinary.substring(0,1)))-Integer.parseInt(bcBinary.substring(1,7), 2));
             if (bias < -63.0) {
                 bias = -63.0; //Just making sure its [-63,63], may want to revisit this later
             }
             //Raw bias with two's complement is established so we can now go from there
-            bias = bias/max6BitBinaryInDecimalOver4;
+            bias = bias/MAX6BITBINARYOVER4;
 
             //Decide positive or negative correlation
             switch (Integer.parseInt(bcBinary.substring(7))) {
@@ -110,6 +145,158 @@ public class Brain {
         }
         return(output);
     }
+
+    private void specifyUsableIO() {
+        ArrayList<int[]> inputsList = new ArrayList<int[]>();
+        ArrayList<int[]> outputsList = new ArrayList<int[]>();
+        for (int i = 0; i < connectionList.size(); i++) {
+            NueronConnection currentConnectionForPurge = connectionList.get(i);
+            switch (currentConnectionForPurge.startNueronIndex[0]) {
+                case 0:
+                    inputNuerons[currentConnectionForPurge.startNueronIndex[1]] = 0; break;
+                case 1:
+                    hiddenNuerons[currentConnectionForPurge.startNueronIndex[1]] = 0; break;
+                default: break;
+            }
+            switch (currentConnectionForPurge.endNueronIndex[0]) {
+                case 1:
+                    hiddenNuerons[currentConnectionForPurge.endNueronIndex[1]] = 0; break;
+                case 2:
+                    outputNuerons[currentConnectionForPurge.endNueronIndex[1]] = 0; break;
+                default: break;
+            }
+        }
+    }
+    
+    /**
+     * Math and other utilities ------------------------
+     */
+    private static double sigmoid(double x) {
+        if (x > 10) {
+            return 1;
+        }
+        else if (x < -10) {
+            return 0;
+        }
+        else {
+            return 1/(1+ Math.exp(-x));
+        }
+    }
+
+    /**
+     * Actual Usable Stuff ----------------------------
+     */
+
+    /**
+     * 
+     * @param inputData 
+     * <p> Takes data in the form of [layer, index]
+     * @return
+     * <p> 0 - Input Layer
+     * <p> 1 - Hidden Layer
+     * <p> 2 - Output Layer
+     */
+    private double getNueron(int[] inputData) {
+        switch (inputData[0]) {
+            case 0:
+                return inputNuerons[inputData[1]];
+            case 1:
+                return hiddenNuerons[inputData[1]];
+            case 2:
+                return outputNuerons[inputData[1]];
+            default:
+                throw new IllegalArgumentException("Data format is incorrect getNueron");
+        }
+    }
+
+    public void brainTimestep() {
+        //REFRESH INPUTS AND ZERO HIDDEN LAYERS/OUTPUTS
+        for (int i = 0; i < inputNuerons.length; i++) {
+            if (inputNuerons[i] > Integer.MIN_VALUE) {
+                inputNuerons[i] = cellOfBrain.callSensor(i);
+            }
+        }
+        for (int i = 0; i < hiddenNuerons.length; i++) {
+            if (hiddenNuerons[i] > Integer.MIN_VALUE) {
+                hiddenNuerons[i] = 0;
+            }
+        }
+        for (int i = 0; i < outputNuerons.length; i++) {
+            if (outputNuerons[i] > Integer.MIN_VALUE) {
+                outputNuerons[i] = 0;
+            }
+        }
+
+        //Calculate connections from Sensors to hidden layers
+        ArrayList<Integer> hiddenLayerConnections = new ArrayList<Integer>(); //Store the index of hidden layer connections to come back to after
+        for (int i = 0; i < connectionList.size(); i++) {
+            NueronConnection currentConnectionInputStep = connectionList.get(i);
+            if (currentConnectionInputStep.startNueronIndex[0] == 1) { //make a list of connections starting at the hidden layer
+                hiddenLayerConnections.add(i);
+            } else {
+                Double sensorValue = (double)(inputNuerons[currentConnectionInputStep.startNueronIndex[1]]);
+                Double formattedValue = ((sensorValue*currentConnectionInputStep.connectionWeight)+currentConnectionInputStep.connectionBias);
+                if (currentConnectionInputStep.endNueronIndex[0] == 1) {
+                    hiddenNuerons[currentConnectionInputStep.endNueronIndex[1]] += formattedValue;
+                } else {
+                    outputNuerons[currentConnectionInputStep.endNueronIndex[1]] += formattedValue;
+                }
+            }
+        }
+
+        //Calculate connections from hidden layers to hidden layers, passing them through a sigmoid function first
+        for (int i = 0; i < hiddenLayerConnections.size(); i++) {
+            NueronConnection hiddenConectionSummation = connectionList.get(hiddenLayerConnections.get(i));
+            if (hiddenConectionSummation.endNueronIndex[0] == 1) {
+                Double activatedValue = sigmoid((double)(getNueron(hiddenConectionSummation.startNueronIndex)));
+                activatedValue = (activatedValue*hiddenConectionSummation.connectionWeight)+hiddenConectionSummation.connectionBias;
+                hiddenNuerons[hiddenConectionSummation.endNueronIndex[1]] += activatedValue;
+            }
+        }
+
+        //Calculate connections from all layers to outputs
+        for (int i = 0; i < connectionList.size(); i++) {
+            NueronConnection outputSumConnection = connectionList.get(i);
+            if (outputSumConnection.endNueronIndex[0] == 2) { //Check that the output is the output layer
+                Double formattedValue = (((double)(getNueron(outputSumConnection.startNueronIndex)))*outputSumConnection.connectionWeight)+outputSumConnection.connectionBias;
+                outputNuerons[outputSumConnection.endNueronIndex[1]] += formattedValue;
+            }
+        }
+
+        //Activation function time!!!
+        for (double valueOfNueron : hiddenNuerons) {
+            valueOfNueron = sigmoid(valueOfNueron);
+        }
+
+        for (double valueOfNueron : outputNuerons) {
+            valueOfNueron = sigmoid(valueOfNueron);
+        }
+
+        //Verify your outputs
+        if (outputNuerons[0] > 0.9 && outputNuerons[1] > 0.9) { //Check if wants to move up and down and if so, do neither
+            outputNuerons[0] = 0;
+            outputNuerons[1] = 0;
+        }
+        
+        if (outputNuerons[2] > 0.9 && outputNuerons[3] > 0.9) { //Check if wants to move left and right and if so, do neither
+            outputNuerons[2] = 0;
+            outputNuerons[3] = 0;
+        }
+
+        //Call your outputs!
+        for (int i = 0; i < outputNuerons.length; i++) {
+            if (outputNuerons[i] > 0.9) {
+                cellOfBrain.doOutput(i);
+            }
+        }
+
+        //PLACE FOR ANY DATA COLLECTION
+
+
+        //End and throw a confirmation
+    }
+    
+    }
     /** ----What the brain needs to do----
      * 
      * Takes input and normalizes it into a value between 0 and 1
@@ -121,4 +308,3 @@ public class Brain {
      * If output neuron is greater than 0.9, fire the neuron
      * 
      */
-}
