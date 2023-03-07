@@ -25,6 +25,76 @@ public class Brain {
         minAllNueronArrays(); //Minimize all arrays
         parseGenome(genomeOfBrain); //Parse the genome and create connections
         specifyUsableIO(); //Sets all in-use nuerons to 0
+
+        //DEBUG
+        for (int i = 0; i < connectionList.size(); i++) {
+            NueronConnection connection = connectionList.get(i);
+            System.out.println("--CONNECTION " + i + "--");
+            System.out.println("Gene: " + genomeOfBrain.genes.get(i));
+            System.out.println();
+            switch (connection.startNueronIndex[0]) {
+                case 0:
+                    System.out.println("Start Layer: Input"); 
+                    switch (connection.startNueronIndex[1]) {
+                        case 0:
+                            System.out.println("Start Nueron: Above Sight Distance"); break;
+                        case 1:
+                            System.out.println("Start Nueron: Below Sight Distance"); break;
+                        case 2:
+                            System.out.println("Start Nueron: Left Sight Distance"); break;
+                        case 3:
+                            System.out.println("Start Nueron: Right Sight Distance"); break;
+                        case 4:
+                            System.out.println("Start Nueron: External Time"); break;
+                        case 5:
+                            System.out.println("Start Nueron: Internal Time"); break;
+                        case 6:
+                            System.out.println("Start Nueron: Top Border Distance"); break;
+                        case 7:
+                            System.out.println("Start Nueron: Bottom Border Distance"); break;
+                        case 8:
+                            System.out.println("Start Nueron: Left Border Distance"); break;
+                        case 9:
+                            System.out.println("Start Nueron: Right Border Distance"); break;
+                        default:
+                            System.out.println("ERROR!!!! Given Start Index: " + connection.startNueronIndex[1]); break;
+                    }
+                    break;
+                case 1:
+                    System.out.println("Start Layer: Hidden");
+                    System.out.println("Start Nueron: " + connection.startNueronIndex[1]);
+                    break;
+                default:
+                    System.out.println("ERROR!!!! Given Start Layer: " + connection.startNueronIndex[0]);
+            }
+            System.out.println();
+            switch (connection.endNueronIndex[0]) {
+                case 1:
+                    System.out.println("End Layer: Hidden");
+                    System.out.println("End Nueron: " + connection.endNueronIndex[1]); break;
+                case 2:
+                    System.out.println("End Layer: Output");
+                    switch (connection.endNueronIndex[1]) {
+                        case 0:
+                            System.out.println("End Nueron: Move Up"); break;
+                        case 1:
+                            System.out.println("End Nueron: Move Down"); break;
+                        case 2:
+                            System.out.println("End Nueron: Move Left"); break;
+                        case 3:
+                            System.out.println("End Nueron: Move Right"); break;
+                        default:
+                            System.out.println("ERROR!!!! Given End Index: " + connection.endNueronIndex[1]); break;
+                    }
+                    break;
+                default:
+                    System.out.println("ERROR!!!! Given End Layer: " + connection.endNueronIndex[0]); break;
+            }
+            System.out.println();
+            System.out.println("Connection Weight: " + connection.connectionWeight);
+            System.out.println("Connection Bias: " + connection.connectionBias);
+            System.out.println();
+        }
     }
     
     /**
@@ -147,8 +217,6 @@ public class Brain {
     }
 
     private void specifyUsableIO() {
-        ArrayList<int[]> inputsList = new ArrayList<int[]>();
-        ArrayList<int[]> outputsList = new ArrayList<int[]>();
         for (int i = 0; i < connectionList.size(); i++) {
             NueronConnection currentConnectionForPurge = connectionList.get(i);
             switch (currentConnectionForPurge.startNueronIndex[0]) {
@@ -254,22 +322,26 @@ public class Brain {
             }
         }
 
-        //Calculate connections from all layers to outputs
+        //Calculate connections from hidden layers to outputs
         for (int i = 0; i < connectionList.size(); i++) {
             NueronConnection outputSumConnection = connectionList.get(i);
-            if (outputSumConnection.endNueronIndex[0] == 2) { //Check that the output is the output layer
+            if (outputSumConnection.endNueronIndex[0] == 2 && outputSumConnection.startNueronIndex[0] == 1) { //Check that the output is the output layer
                 Double formattedValue = (((double)(getNueron(outputSumConnection.startNueronIndex)))*outputSumConnection.connectionWeight)+outputSumConnection.connectionBias;
                 outputNuerons[outputSumConnection.endNueronIndex[1]] += formattedValue;
             }
         }
 
         //Activation function time!!!
-        for (double valueOfNueron : hiddenNuerons) {
-            valueOfNueron = sigmoid(valueOfNueron);
+        for (int i = 0; i < hiddenNuerons.length; i++) {
+            if (hiddenNuerons[i] > Integer.MIN_VALUE) {
+                hiddenNuerons[i] = sigmoid(outputNuerons[i]);
+            }
         }
 
-        for (double valueOfNueron : outputNuerons) {
-            valueOfNueron = sigmoid(valueOfNueron);
+        for (int i = 0; i < outputNuerons.length; i++) {
+            if (outputNuerons[i] > Integer.MIN_VALUE) {
+                outputNuerons[i] = sigmoid(outputNuerons[i]);
+            }
         }
 
         //Verify your outputs
@@ -286,6 +358,20 @@ public class Brain {
         //Call your outputs!
         for (int i = 0; i < outputNuerons.length; i++) {
             if (outputNuerons[i] > 0.9) {
+                //Debug
+                System.out.println("Nueron " + i + " value: " + outputNuerons[i]);
+                switch (i) {
+                    case 0:
+                        System.out.println("Attempting to Move Up!"); break;
+                    case 1:
+                        System.out.println("Attempting to Move Down!"); break;
+                    case 2:
+                        System.out.println("Attempting to Move Left!"); break;
+                    case 3:
+                        System.out.println("Attempting to Move Right!"); break;
+
+                }
+                //Debug End
                 cellOfBrain.doOutput(i);
             }
         }

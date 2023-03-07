@@ -18,11 +18,11 @@ public class Cell {
         posY = startY;
         cellWorld = inputWorld;
         birthTime = cellWorld.cTime;
-        cellGenome = new Genome(this, inputGenome, inputMutationF);
-        cellBrain = new Brain(this, cellGenome);
         numInputSensors = 10; //MANUALLY SET
         numHiddenNuerons = inputHidden;
         numOutputs = 4; //MANUALLY SET
+        cellGenome = new Genome(this, inputGenome, inputMutationF);
+        cellBrain = new Brain(this, cellGenome);
     }
 
     public int getX() {
@@ -170,6 +170,9 @@ public class Cell {
     /* Movement */
 
     public void moveUp() {
+        if (posY-1 == -1) {
+            throw new IllegalCallerException("no up");
+        }
         try {
             cellWorld.moveCell(this, posX, posY-1);
         }
@@ -180,6 +183,9 @@ public class Cell {
     }
 
     public void moveDown() {
+        if (posY+1 > cellWorld.sizeY) {
+            throw new IllegalCallerException("no down");
+        }
         try {
             cellWorld.moveCell(this, posX, posY+1);
         }
@@ -190,23 +196,29 @@ public class Cell {
     }
 
     public void moveLeft() {
+        if (posX-1 == -1) {
+            throw new IllegalCallerException("no left");
+        }
         try {
             cellWorld.moveCell(this, posX-1, posY);
         }
         catch(Exception IllegalArgumentException) {
             throw IllegalArgumentException;
         }
-        this.posY=posX-1;
+        this.posX=posX-1;
     }
 
     public void moveRight() {
+        if (posX+1 > cellWorld.sizeX) {
+            throw new IllegalCallerException("no right");
+        }
         try {
             cellWorld.moveCell(this, posX+1, posY);
         }
         catch(Exception IllegalArgumentException) {
             throw IllegalArgumentException;
         }
-        this.posY=posY+1;
+        this.posX=posX+1;
     }
 
     /**
@@ -218,21 +230,25 @@ public class Cell {
      * <p> 3 - Move Right
      */
     public void doOutput(int outputIndex) {
-        switch (outputIndex) {
-            case 0:
-                moveUp();
-                break;
-            case 1:
-                moveDown();
-                break;
-            case 2:
-                moveLeft();
-                break;
-            case 3: 
-                moveRight();
-                break;
-            default:
-                throw new IndexOutOfBoundsException("Not a valid output");
+            try {
+            switch (outputIndex) {
+                case 0:
+                    moveUp();
+                    break;
+                case 1:
+                    moveDown();
+                    break;
+                case 2:
+                    moveLeft();
+                    break;
+                case 3: 
+                    moveRight();
+                    break;
+                default:
+                    throw new IndexOutOfBoundsException("Not a valid output");
+            }
+        } catch (Exception IllegalCallerException) {
+            System.out.print("Illegal Movement Desired by cell at (" + this.posX + ", " + this.posY + ") " + IllegalCallerException);
         }
     }
 

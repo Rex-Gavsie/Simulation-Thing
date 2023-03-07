@@ -84,22 +84,48 @@ public class World {
     }
 
     public void worldTimestep() {
+        cTime++;
         Cell[][] savedCellsInWorld = cellsInWorld; //Ideally freeze the list of cells in the world
-        for (int i = 0; i < savedCellsInWorld.length; i++) {
-            for (int j = 0; j < savedCellsInWorld[i].length; i++) {
-                savedCellsInWorld[i][j].cellTimestep();
+        for (int i = 0; i < sizeY; i++) {
+            for (int j = 0; j < sizeX; j++) {
+                if (savedCellsInWorld[i][j] != null) {
+                    savedCellsInWorld[i][j].cellTimestep();
+                }
             }
         }
     }
 
+    public void printCells() {
+        System.out.println();
+        for (int row = 0; row < sizeY; row++) {
+            for (int horI = 0; horI < sizeX; horI++) {
+                System.out.print("--");
+            }
+            System.out.println();
+            for (int vertI = 0; vertI < sizeX; vertI++) {
+                System.out.print("|");
+                if (cellsInWorld[row][vertI] != null) {
+                    System.out.print("X");
+                } else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
+        for (int horI = 0; horI < sizeX; horI++) {
+            System.out.print("--");
+        }
+    }
+
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 10, "Steve", 2, 2);
+        World thisWorld = new World(10, 10, 1, "Steve", 2, 2);
         //System.out.println(thisWorld.nothingAtExceptionCount);
-        displayWorld.displayThisWorld(thisWorld);
+        thisWorld.printCells();
         thisWorld.worldTimestep();
+        thisWorld.printCells();
         displayWorld.displayThisWorld(thisWorld);
-        thisWorld.worldTimestep();
-        displayWorld.displayThisWorld(thisWorld);
+        //thisWorld.worldTimestep();
+        //displayWorld.displayThisWorld(thisWorld);
         /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
             int numInRow=0;
             for (int col = 0; col < thisWorld.cellsInWorld[row].length; col++) {
