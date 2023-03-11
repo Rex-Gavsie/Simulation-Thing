@@ -14,14 +14,14 @@ public class displayWorld extends JFrame {
     public displayWorld(World inputWorld) {
         ourWorld = inputWorld;
         DisplayPanel simulatorPanel = new DisplayPanel(inputWorld);
+        simulatorPanel.heightInit();
 
         //Establish Text Fields
-        JTextField margChange = new JTextField(3);
-        JTextField heightChange = new JTextField(3);
-        JTextField stepsPerClick = new JTextField(3);
+        // JTextField heightChange = new JTextField(3);
+        // JTextField stepsPerClick = new JTextField(3);
 
-        List<JTextField> textFields = Arrays.asList(stepsPerClick, margChange, heightChange);
-        String[] labels = {"Steps: ", "marg: ", "height: "};
+        // List<JTextField> textFields = Arrays.asList(stepsPerClick, heightChange);
+        // String[] labels = {"Steps: ", "height: "};
 
         
 
@@ -32,31 +32,23 @@ public class displayWorld extends JFrame {
             repaint();
         });
 
-        JButton setMargButton = new JButton("Set Marg");
-        setMargButton.addActionListener(e -> {
-            simulatorPanel.changeMarg(Integer.parseInt(margChange.getText()));
-        });
 
-        JButton setHeightButton = new JButton("Set Height");
-        setHeightButton.addActionListener(e -> {
-            // simulatorPanel.height = Integer.parseInt(heightChange.getText());
-            // repaint();
-        });
+        
         
         // Button Panel
         // Box buttonBar = Box.createHorizontalBox();
         // buttonBar.add(timeStepButton);
         // buttonBar.add(setMargButton);
         // buttonBar.add(setHeightButton);
-        List<JButton> buttonList = Arrays.asList(timeStepButton, setMargButton, setHeightButton);
+        List<JButton> buttonList = Arrays.asList(timeStepButton);
 
         //Establish text field stuff
         JPanel infoBar = new JPanel();
-        for (int i = 0; i < textFields.size(); i++) {
+        for (int i = 0; i < buttonList.size(); i++) {
             Box vBox = Box.createVerticalBox();
-            vBox.add(new JLabel(labels[i], null, JLabel.RIGHT));
-            //vBox.add(Box.createHorizontalStrut(1));
-            vBox.add(textFields.get(i));
+            // vBox.add(new JLabel(labels[i], null, JLabel.RIGHT));
+            // //vBox.add(Box.createHorizontalStrut(1));
+            // vBox.add(textFields.get(i));
             // vBox.add(Box.createHorizontalStrut(1));
             vBox.add(buttonList.get(i));
             infoBar.add(vBox);
@@ -103,12 +95,25 @@ public class displayWorld extends JFrame {
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 10, "Steve", 2, 2);
+        World thisWorld = new World(9, 8, 10, "Steve", 2, 2);
         displayWorld dWorld = new displayWorld(thisWorld);
         dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         dWorld.setSize(600, 600);
         dWorld.setLocation(0,0);
         dWorld.setVisible(true);
+
+
+        //DEBUG -----
+        // thisWorld.printCells();
+        // for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
+        //     int numInRow=0;
+        //     for (int col = 0; col < thisWorld.cellsInWorld[row].length; col++) {
+        //         if (thisWorld.cellsInWorld[row][col] != null) {
+        //             numInRow++;
+        //         }
+        //     }
+        //     System.out.println("Row: " + row + " | Cells: " + numInRow);
+        // }
     }
 
 }

@@ -111,6 +111,7 @@ public class World {
                     System.out.print(" ");
                 }
             }
+            System.out.print("|");
             System.out.println();
         }
         for (int horI = 0; horI < sizeX; horI++) {
@@ -128,15 +129,7 @@ public class World {
         dWorld.setVisible(true);
         //thisWorld.worldTimestep();
         //displayWorld.displayThisWorld(thisWorld);
-        /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
-            int numInRow=0;
-            for (int col = 0; col < thisWorld.cellsInWorld[row].length; col++) {
-                if (thisWorld.cellsInWorld[row][col] != null) {
-                    numInRow++;
-                }
-            }
-            System.out.println("Row: " + row + " | Cells: " + numInRow);
-        }*/
+        
 
     }
 }

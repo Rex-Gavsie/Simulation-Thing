@@ -1,14 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 
 public class DisplayPanel extends JPanel {
-    private int marg = 60;
     private World ourWorld;
-    public int height = getHeight();
+    public int height = getHeight()/2;
 
     public DisplayPanel(World inputWorld) {
         ourWorld = inputWorld;
@@ -26,9 +24,9 @@ public class DisplayPanel extends JPanel {
         double heightMiddle = getHeight()/2;
         
         //Draw the center point just for debug
-        graph.fill(new Ellipse2D.Double(widthMiddle-5, heightMiddle-5, 10., 10.));
-        graph.draw(new Line2D.Double(0, heightMiddle, getWidth(), heightMiddle));
-        graph.draw(new Line2D.Double(widthMiddle, 0, widthMiddle, getHeight()));
+        // graph.fill(new Ellipse2D.Double(widthMiddle-5, heightMiddle-5, 10., 10.));
+        // graph.draw(new Line2D.Double(0, heightMiddle, getWidth(), heightMiddle));
+        // graph.draw(new Line2D.Double(widthMiddle, 0, widthMiddle, getHeight()));
 
 
         double y = (double)(height)/ourWorld.sizeY;
@@ -47,30 +45,25 @@ public class DisplayPanel extends JPanel {
         Double upperPoint = heightMiddle-(y*(ourWorld.sizeY/2));
         Double lowerPoint = heightMiddle+(y*(ourWorld.sizeY/2));
 
+        Double lineYOddMod = 0.;
+        Double lineXOddMod = 0.;
+
         if (ourWorld.sizeX%2 == 0) { 
-            //If width is even then draw lines in the center (x | x) 
-            //If odd, draw the line in the center (| x |)
-            for (int i = 0; i<=ourWorld.sizeY; i++) {
-                graph.draw(new Line2D.Double(leftPoint, upperPoint+(y*i), rightPoint, upperPoint+(y*i)));
-            }   
-        } else {
-            for (int i = 0; i <=ourWorld.sizeY; i++) {
-                graph.draw(new Line2D.Double(leftPoint-(x/2), upperPoint+(y*i)-(y/2), rightPoint+(x/2), upperPoint+(y*i)-(y/2)));
-            }
+            lineYOddMod = y/2;
+        }
+        if (ourWorld.sizeY%2 == 0) { 
+            lineXOddMod = x/2;
+        }
+
+        for (int i = 0; i <=ourWorld.sizeY; i++) {
+            graph.draw(new Line2D.Double(leftPoint-lineXOddMod, upperPoint+(y*i)-lineYOddMod, rightPoint+lineXOddMod, upperPoint+(y*i)-lineYOddMod));
         }
         
         //draw Vertical lines
-
-        if (ourWorld.sizeY%2 == 0) {
-            //Same idea as with the horizontal lines
-            for (int i=0; i<=ourWorld.sizeX; i++) {
-                graph.draw(new Line2D.Double(leftPoint+(x*i), upperPoint, leftPoint+(x*i), lowerPoint));
-            }
-        } else {
-            for (int i=0; i<=ourWorld.sizeX; i++) {
-                graph.draw(new Line2D.Double(leftPoint+(x*i)-(x/2), upperPoint-(y/2), leftPoint+(x*i)-(x/2), lowerPoint+(y/2)));
-            }
+        for (int i=0; i<=ourWorld.sizeX; i++) {
+            graph.draw(new Line2D.Double(leftPoint+(x*i)-lineXOddMod, upperPoint-lineYOddMod, leftPoint+(x*i)-lineXOddMod, lowerPoint+lineYOddMod));
         }
+        
         
         graph.setPaint(Color.RED);
 
@@ -79,17 +72,28 @@ public class DisplayPanel extends JPanel {
         for (Cell[] row : ourWorld.cellsInWorld) {
             for (Cell cell : row) {
                 if (cell != null) {
-                    Ellipse2D drawThisCell = new Ellipse2D.Double(marg+(y*(cell.getX()-0.75)), marg+(y*(cell.getY()-0.75)), y/2, y/2);    
+                    Double xOddMod = 0.;
+                    Double yOddMod = 0.;
+                    if (ourWorld.sizeX%2 != 0) {
+                        xOddMod = x/2;
+                    }
+                    if (ourWorld.sizeY%2 != 0) {
+                        yOddMod = y/2;
+                    }
+                    Double cellXPos = (((((double)cell.getX())-(ourWorld.sizeX/2))*x)+widthMiddle-x)-xOddMod;
+                    Double cellYPos = (((((double)cell.getY())-(ourWorld.sizeY/2))*y)+heightMiddle-y)-yOddMod;
+                    Ellipse2D drawThisCell = new Ellipse2D.Double(cellXPos, cellYPos, y, y);    
                     graph.draw(drawThisCell);
                     graph.fill(drawThisCell);
                     //System.out.println("Printed at (" + cell.getX() + ", " + cell.getY() + ")");
                 }
             }
         }
+
+        System.out.println("Height: " + height);
     }
 
-    public void changeMarg(int newMarg) {
-        marg = newMarg;
-        repaint();
+    public void heightInit() {
+        height = getHeight()/2;
     }
 }

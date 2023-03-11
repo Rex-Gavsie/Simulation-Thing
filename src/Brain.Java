@@ -27,74 +27,74 @@ public class Brain {
         specifyUsableIO(); //Sets all in-use nuerons to 0
 
         //DEBUG
-        for (int i = 0; i < connectionList.size(); i++) {
-            NueronConnection connection = connectionList.get(i);
-            System.out.println("--CONNECTION " + i + "--");
-            System.out.println("Gene: " + genomeOfBrain.genes.get(i));
-            System.out.println();
-            switch (connection.startNueronIndex[0]) {
-                case 0:
-                    System.out.println("Start Layer: Input"); 
-                    switch (connection.startNueronIndex[1]) {
-                        case 0:
-                            System.out.println("Start Nueron: Above Sight Distance"); break;
-                        case 1:
-                            System.out.println("Start Nueron: Below Sight Distance"); break;
-                        case 2:
-                            System.out.println("Start Nueron: Left Sight Distance"); break;
-                        case 3:
-                            System.out.println("Start Nueron: Right Sight Distance"); break;
-                        case 4:
-                            System.out.println("Start Nueron: External Time"); break;
-                        case 5:
-                            System.out.println("Start Nueron: Internal Time"); break;
-                        case 6:
-                            System.out.println("Start Nueron: Top Border Distance"); break;
-                        case 7:
-                            System.out.println("Start Nueron: Bottom Border Distance"); break;
-                        case 8:
-                            System.out.println("Start Nueron: Left Border Distance"); break;
-                        case 9:
-                            System.out.println("Start Nueron: Right Border Distance"); break;
-                        default:
-                            System.out.println("ERROR!!!! Given Start Index: " + connection.startNueronIndex[1]); break;
-                    }
-                    break;
-                case 1:
-                    System.out.println("Start Layer: Hidden");
-                    System.out.println("Start Nueron: " + connection.startNueronIndex[1]);
-                    break;
-                default:
-                    System.out.println("ERROR!!!! Given Start Layer: " + connection.startNueronIndex[0]);
-            }
-            System.out.println();
-            switch (connection.endNueronIndex[0]) {
-                case 1:
-                    System.out.println("End Layer: Hidden");
-                    System.out.println("End Nueron: " + connection.endNueronIndex[1]); break;
-                case 2:
-                    System.out.println("End Layer: Output");
-                    switch (connection.endNueronIndex[1]) {
-                        case 0:
-                            System.out.println("End Nueron: Move Up"); break;
-                        case 1:
-                            System.out.println("End Nueron: Move Down"); break;
-                        case 2:
-                            System.out.println("End Nueron: Move Left"); break;
-                        case 3:
-                            System.out.println("End Nueron: Move Right"); break;
-                        default:
-                            System.out.println("ERROR!!!! Given End Index: " + connection.endNueronIndex[1]); break;
-                    }
-                    break;
-                default:
-                    System.out.println("ERROR!!!! Given End Layer: " + connection.endNueronIndex[0]); break;
-            }
-            System.out.println();
-            System.out.println("Connection Weight: " + connection.connectionWeight);
-            System.out.println("Connection Bias: " + connection.connectionBias);
-            System.out.println();
-        }
+    //     for (int i = 0; i < connectionList.size(); i++) {
+    //         NueronConnection connection = connectionList.get(i);
+    //         System.out.println("--CONNECTION " + i + "--");
+    //         System.out.println("Gene: " + genomeOfBrain.genes.get(i));
+    //         System.out.println();
+    //         switch (connection.startNueronIndex[0]) {
+    //             case 0:
+    //                 System.out.println("Start Layer: Input"); 
+    //                 switch (connection.startNueronIndex[1]) {
+    //                     case 0:
+    //                         System.out.println("Start Nueron: Above Sight Distance"); break;
+    //                     case 1:
+    //                         System.out.println("Start Nueron: Below Sight Distance"); break;
+    //                     case 2:
+    //                         System.out.println("Start Nueron: Left Sight Distance"); break;
+    //                     case 3:
+    //                         System.out.println("Start Nueron: Right Sight Distance"); break;
+    //                     case 4:
+    //                         System.out.println("Start Nueron: External Time"); break;
+    //                     case 5:
+    //                         System.out.println("Start Nueron: Internal Time"); break;
+    //                     case 6:
+    //                         System.out.println("Start Nueron: Top Border Distance"); break;
+    //                     case 7:
+    //                         System.out.println("Start Nueron: Bottom Border Distance"); break;
+    //                     case 8:
+    //                         System.out.println("Start Nueron: Left Border Distance"); break;
+    //                     case 9:
+    //                         System.out.println("Start Nueron: Right Border Distance"); break;
+    //                     default:
+    //                         System.out.println("ERROR!!!! Given Start Index: " + connection.startNueronIndex[1]); break;
+    //                 }
+    //                 break;
+    //             case 1:
+    //                 System.out.println("Start Layer: Hidden");
+    //                 System.out.println("Start Nueron: " + connection.startNueronIndex[1]);
+    //                 break;
+    //             default:
+    //                 System.out.println("ERROR!!!! Given Start Layer: " + connection.startNueronIndex[0]);
+    //         }
+    //         System.out.println();
+    //         switch (connection.endNueronIndex[0]) {
+    //             case 1:
+    //                 System.out.println("End Layer: Hidden");
+    //                 System.out.println("End Nueron: " + connection.endNueronIndex[1]); break;
+    //             case 2:
+    //                 System.out.println("End Layer: Output");
+    //                 switch (connection.endNueronIndex[1]) {
+    //                     case 0:
+    //                         System.out.println("End Nueron: Move Up"); break;
+    //                     case 1:
+    //                         System.out.println("End Nueron: Move Down"); break;
+    //                     case 2:
+    //                         System.out.println("End Nueron: Move Left"); break;
+    //                     case 3:
+    //                         System.out.println("End Nueron: Move Right"); break;
+    //                     default:
+    //                         System.out.println("ERROR!!!! Given End Index: " + connection.endNueronIndex[1]); break;
+    //                 }
+    //                 break;
+    //             default:
+    //                 System.out.println("ERROR!!!! Given End Layer: " + connection.endNueronIndex[0]); break;
+    //         }
+    //         System.out.println();
+    //         System.out.println("Connection Weight: " + connection.connectionWeight);
+    //         System.out.println("Connection Bias: " + connection.connectionBias);
+    //         System.out.println();
+    //     }
     }
     
     /**
