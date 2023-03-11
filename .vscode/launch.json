@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "displayWorld",
+            "request": "launch",
+            "mainClass": "displayWorld",
+            "projectName": "Simulation-Thing_d5411bc8"
+        },
+        {
+            "type": "java",
+            "name": "MiddleEarth",
+            "request": "launch",
+            "mainClass": "MiddleEarth",
+            "projectName": "Simulation-Thing_d5411bc8"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

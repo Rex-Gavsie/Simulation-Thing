@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.JFrame;
 
 public class World {
     public int cTime, sizeX, sizeY, numOfGenes, pop; // Every timestep, cTime++.
@@ -118,12 +119,13 @@ public class World {
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 1, "Steve", 2, 2);
+        World thisWorld = new World(10, 10, 10, "Steve", 2, 2);
         //System.out.println(thisWorld.nothingAtExceptionCount);
-        thisWorld.printCells();
-        thisWorld.worldTimestep();
-        thisWorld.printCells();
-        displayWorld.displayThisWorld(thisWorld);
+        displayWorld dWorld = new displayWorld(thisWorld);
+        dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        dWorld.setSize(600, 400);
+        dWorld.setLocation(200,200);
+        dWorld.setVisible(true);
         //thisWorld.worldTimestep();
         //displayWorld.displayThisWorld(thisWorld);
         /*for (int row = 0; row < thisWorld.cellsInWorld.length; row++) {
