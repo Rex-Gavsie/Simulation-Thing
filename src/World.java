@@ -11,6 +11,22 @@ public class World {
     public Random worldRandom;
     public int nothingAtExceptionCount;
     public int worldHiddenNueronCount;
+    private ArrayList<int[][]> winZoneList; //Stores locations of win condition zones in the form of [[x1, y1], [x2, y2]]
+    private ArrayList<Cell> successfulCellList = new ArrayList<Cell>();
+
+    public World() {
+        sizeX = 0;
+        sizeY = 0;
+        cTime = 0;
+        worldTitle = "";
+        numOfGenes = 0;
+        pop = 0;
+        activationFunctionSelect = 0;
+        worldRandom = new Random();
+        nothingAtExceptionCount = 0;
+        worldHiddenNueronCount = 0;
+        winZoneList = new ArrayList<>();
+    }
 
     public World(int inputX, int inputY, int startPopulation, String title, int inputGeneNum, int hiddenNueronInput) {
         //Verify legal inputs
@@ -28,6 +44,7 @@ public class World {
         worldRandom = new Random();
         nothingAtExceptionCount = 0;
         worldHiddenNueronCount = hiddenNueronInput;
+        winZoneList = new ArrayList<>();
         /*
          * Making cells based on the population number
          */
@@ -116,6 +133,20 @@ public class World {
         }
         for (int horI = 0; horI < sizeX; horI++) {
             System.out.print("--");
+        }
+    }
+
+    public void setSurvivalConditions(ArrayList<int[][]> locationList) {
+        winZoneList = locationList;
+    }
+
+    public void endGeneration() {
+        //get successful cells
+        
+        for (int row = 0; row < sizeY; row++) {
+            for (int column = 0; column < sizeX; column++) {
+
+            }
         }
     }
 
