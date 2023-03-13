@@ -50,7 +50,7 @@ public class Genome {
         return buffer.toString();
     }
 
-    public String mutateGene(String inputGene) {
+    public static String mutateGene(String inputGene) {
         Random random = new Random();
         int mutationBit = random.nextInt(0, 32);
         StringBuilder binaryGene = new StringBuilder(Integer.toBinaryString(Integer.parseInt(inputGene, 16)));
