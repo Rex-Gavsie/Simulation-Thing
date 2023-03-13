@@ -12,7 +12,7 @@ public class Genome {
     * Creates a Genome for a given cell
     * @param inputGeneList is a string array containing all the cell's genes
     *  
-    *   ***THIS COULD BE WHERE WE IMPLEMENT MUTATION***
+    *   ***WHERE MUTATION IS IMPLIMENTED***
     *
     */
     public Genome() {
@@ -24,7 +24,12 @@ public class Genome {
         cellOfGenome = inputCell;
         mutationFactor = inputMutationFactor;
         for (int i = 0; i < inputGeneList.size(); i++) {
+            int mutator = genomeRandom.nextInt(0,(int)(1/inputMutationFactor)+1);
+            if (mutator == 0) {
+                genes.add(mutateGene(inputGeneList.get(i)));
+            } else {
             genes.add(inputGeneList.get(i));
+        }
         }
         genomeRandom = inputCell.cellWorld.worldRandom;
     }
@@ -45,8 +50,19 @@ public class Genome {
         return buffer.toString();
     }
 
-    public static String mutateGene(String inputGene) {
-        return null;
+    public String mutateGene(String inputGene) {
+        Random random = new Random();
+        int mutationBit = random.nextInt(0, 32);
+        StringBuilder binaryGene = new StringBuilder(Integer.toBinaryString(Integer.parseInt(inputGene, 16)));
+        if (binaryGene.charAt(mutationBit) == 0) {
+            binaryGene.setCharAt(mutationBit, '1');
+        } else {
+            binaryGene.setCharAt(mutationBit, '0');
+        }
+        String returnHex = Integer.toHexString(Integer.parseInt(binaryGene.toString(), 2));
+        return returnHex;
+        
+
     }
 
     /*public static void main(String[] args) {
