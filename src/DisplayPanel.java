@@ -48,10 +48,10 @@ public class DisplayPanel extends JPanel {
         Double lineYOddMod = 0.;
         Double lineXOddMod = 0.;
 
-        if (ourWorld.sizeX%2 == 0) { 
+        if (ourWorld.sizeY%2 != 0) { 
             lineYOddMod = y/2;
         }
-        if (ourWorld.sizeY%2 == 0) { 
+        if (ourWorld.sizeX%2 != 0) { 
             lineXOddMod = x/2;
         }
 
@@ -90,10 +90,10 @@ public class DisplayPanel extends JPanel {
             }
         }
 
-        System.out.println("Height: " + height);
+        // System.out.println("Height: " + height);
     }
 
-    public void heightInit() {
-        height = getHeight()/2;
+    public void heightInit(int inputHeight) {
+        height = inputHeight;
     }
 }

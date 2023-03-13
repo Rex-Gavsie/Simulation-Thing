@@ -14,7 +14,8 @@ public class displayWorld extends JFrame {
     public displayWorld(World inputWorld) {
         ourWorld = inputWorld;
         DisplayPanel simulatorPanel = new DisplayPanel(inputWorld);
-        simulatorPanel.heightInit();
+        simulatorPanel.heightInit(200); //Set a base height so its not tiny
+        
 
         //Establish Text Fields
         // JTextField heightChange = new JTextField(3);
@@ -28,7 +29,9 @@ public class displayWorld extends JFrame {
         //Buttons
         JButton timeStepButton = new JButton("Step");
         timeStepButton.addActionListener(e -> {
+            // ourWorld.printCells();
             ourWorld.worldTimestep();
+            // ourWorld.printCells();
             repaint();
         });
 
@@ -82,8 +85,9 @@ public class displayWorld extends JFrame {
             }
         });
 
+
         Container c = this.getContentPane();
-        c.add(simulatorPanel);
+        c.add(vBox2);
     }
 
     public static void displayThisWorld(World inputWorld) {
@@ -95,7 +99,7 @@ public class displayWorld extends JFrame {
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(9, 8, 10, "Steve", 2, 2);
+        World thisWorld = new World(10, 10, 10, "Steve", 5, 2);
         displayWorld dWorld = new displayWorld(thisWorld);
         dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         dWorld.setSize(600, 600);

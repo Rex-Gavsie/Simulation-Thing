@@ -10,6 +10,7 @@ public class Brain {
     private double[] inputNuerons, hiddenNuerons, outputNuerons; //min int value Indicates an out of use nueron, otherwise every timestep it will call the inputs from the cell to update it and then call the outputs that it chooses
     private boolean arraysInitialized = false; //Stops us from minimizing the arrays after initialization
     private ArrayList<NueronConnection> connectionList = new ArrayList<NueronConnection>();
+    private boolean actionCompleted = false; //Limits cell to 1 action per step
 
     /**
     * @param inputGenome stores the input genome
@@ -295,6 +296,8 @@ public class Brain {
             }
         }
 
+        actionCompleted = false;
+
         //Calculate connections from Sensors to hidden layers
         ArrayList<Integer> hiddenLayerConnections = new ArrayList<Integer>(); //Store the index of hidden layer connections to come back to after
         for (int i = 0; i < connectionList.size(); i++) {
@@ -357,7 +360,7 @@ public class Brain {
 
         //Call your outputs!
         for (int i = 0; i < outputNuerons.length; i++) {
-            if (outputNuerons[i] > 0.9) {
+            if (outputNuerons[i] > 0.9 && actionCompleted == false) {
                 //Debug
                 System.out.println("Nueron " + i + " value: " + outputNuerons[i]);
                 switch (i) {
@@ -372,7 +375,12 @@ public class Brain {
 
                 }
                 //Debug End
-                cellOfBrain.doOutput(i);
+                try {
+                    cellOfBrain.doOutput(i);
+                    actionCompleted = true;
+                } catch (Exception IllegalCallerException) {
+                    
+                }
             }
         }
 

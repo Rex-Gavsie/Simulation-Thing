@@ -120,7 +120,7 @@ public class World {
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 10, "Steve", 2, 2);
+        World thisWorld = new World(10, 10, 5, "Steve", 7, 2);
         //System.out.println(thisWorld.nothingAtExceptionCount);
         displayWorld dWorld = new displayWorld(thisWorld);
         dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

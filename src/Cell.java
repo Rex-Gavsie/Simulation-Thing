@@ -248,7 +248,8 @@ public class Cell {
                     throw new IndexOutOfBoundsException("Not a valid output");
             }
         } catch (Exception IllegalCallerException) {
-            System.out.print("Illegal Movement Desired by cell at (" + this.posX + ", " + this.posY + ") " + IllegalCallerException);
+            // System.out.print("Illegal Movement Desired by cell at (" + this.posX + ", " + this.posY + ") " + IllegalCallerException);
+            throw IllegalCallerException;
         }
     }
 
