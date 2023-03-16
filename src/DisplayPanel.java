@@ -6,22 +6,30 @@ import java.awt.geom.*;
 
 public class DisplayPanel extends JPanel {
     private World ourWorld;
-    public int height = getHeight()/2;
+    public int height;
+    double widthMiddle, heightMiddle;
 
     public DisplayPanel(World inputWorld) {
         ourWorld = inputWorld;
+        widthMiddle = getWidth()/2;
+        heightMiddle = getHeight()/2;
+        height = getHeight();
+        this.setFocusable(true);
+    }
+
+    public void initVariables(int width, int height) {
+        widthMiddle = width/2;
+        heightMiddle = height/2;
+        this.height = height;
     }
 
     protected void paintComponent(Graphics grf) {
         super.paintComponent(grf);
         Graphics2D graph = (Graphics2D)grf;
-
-        
         
         graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double widthMiddle = getWidth()/2;
-        double heightMiddle = getHeight()/2;
+        
         
         //Draw the center point just for debug
         // graph.fill(new Ellipse2D.Double(widthMiddle-5, heightMiddle-5, 10., 10.));
@@ -93,7 +101,49 @@ public class DisplayPanel extends JPanel {
         // System.out.println("Height: " + height);
     }
 
-    public void heightInit(int inputHeight) {
-        height = inputHeight;
+    /**
+     * 
+     * @param direction 
+     *  <p> If > 0, go right
+     *  <p> If < 0, go left
+     */
+    public void incrementMiddleX(int direction) {
+        if (direction > 0) {
+            widthMiddle++;
+        } else {
+            widthMiddle--;
+        }
+        repaint();
     }
+
+    /**
+     * 
+     * @param direction 
+     *  <p> If > 0, go down
+     *  <p> If < 0, go up
+     */
+    public void incrementMiddleY(int direction) {
+        if (direction > 0) {
+            heightMiddle++;
+        } else {
+            heightMiddle--;
+        }
+        repaint();
+    }
+
+    /**
+     * 
+     * @param direction 
+     *  <p> If > 0, go down
+     *  <p> If < 0, go up
+     */
+    public void incrementHeight(int direction) {
+        if (direction > 0) {
+            height++;
+        } else {
+            height--;
+        }
+        repaint();
+    }
+
 }

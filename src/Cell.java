@@ -33,6 +33,10 @@ public class Cell {
         return posY;
     }
 
+    public ArrayList<String> getGenome() {
+        return cellGenome.genes;
+    }
+
     /**
      * Cell Functions
      */
@@ -170,7 +174,7 @@ public class Cell {
     /* Movement */
 
     public void moveUp() {
-        if (posY-1 == -1) {
+        if (posY-1 == 0) {
             throw new IllegalCallerException("no up");
         }
         try {
@@ -196,7 +200,7 @@ public class Cell {
     }
 
     public void moveLeft() {
-        if (posX-1 == -1) {
+        if (posX-1 == 0) {
             throw new IllegalCallerException("no left");
         }
         try {

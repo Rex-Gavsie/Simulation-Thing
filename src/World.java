@@ -12,7 +12,7 @@ public class World {
     public int nothingAtExceptionCount;
     public int worldHiddenNueronCount;
     private ArrayList<int[][]> winZoneList; //Stores locations of win condition zones in the form of [[x1, y1], [x2, y2]]
-    private ArrayList<Cell> successfulCellList = new ArrayList<Cell>();
+    private ArrayList<ArrayList<String>> successfulCellList = new ArrayList<ArrayList<String>>();
 
     public World() {
         sizeX = 0;
@@ -20,6 +20,7 @@ public class World {
         cTime = 0;
         worldTitle = "";
         numOfGenes = 0;
+        mutationFactor = 0;
         pop = 0;
         activationFunctionSelect = 0;
         worldRandom = new Random();
@@ -28,7 +29,7 @@ public class World {
         winZoneList = new ArrayList<>();
     }
 
-    public World(int inputX, int inputY, int startPopulation, String title, int inputGeneNum, int hiddenNueronInput) {
+    public World(int inputX, int inputY, int startPopulation, String title, int inputGeneNum, double mutationFactor, int hiddenNueronInput) {
         //Verify legal inputs
         if (inputX*inputY < startPopulation) {
             throw new IllegalArgumentException("Population is greater than area");
@@ -43,6 +44,7 @@ public class World {
         activationFunctionSelect = 0;
         worldRandom = new Random();
         nothingAtExceptionCount = 0;
+        this.mutationFactor = mutationFactor;
         worldHiddenNueronCount = hiddenNueronInput;
         winZoneList = new ArrayList<>();
         /*
@@ -136,24 +138,69 @@ public class World {
         }
     }
 
-    public void setSurvivalConditions(ArrayList<int[][]> locationList) {
-        winZoneList = locationList;
+    public void addSurvivalCondition(int[][] locationList) {
+        winZoneList.add(locationList);
     }
 
-    public void endGeneration() {
-        //get successful cells
-        
-        for (int row = 0; row < sizeY; row++) {
-            for (int column = 0; column < sizeX; column++) {
+    public void survivalZoneListClear() {
+        winZoneList.clear();
+    }
 
+    public void endGeneration() throws IllegalAccessException {
+        System.out.println(winZoneList.size());
+        if (winZoneList.size() == 0) {
+            throw new IllegalAccessException();
+        }
+        //get successful cells
+        for (int i = 0; i < winZoneList.size(); i++) {
+            saveOneRegion(winZoneList.get(i));
+        }
+        
+        //Clear cells in world
+        purgeCellsInWorld();
+
+        //Create new cells based on genomes of old cells
+        reproduceSuccessfulCells();
+    }
+
+
+
+    private void saveOneRegion(int[][] region) {
+        if (region[0][1] > region[1][1] || region[0][0] > region[1][0]) {
+            throw new IllegalArgumentException();
+        }
+        for (int i = region[0][1]; i < region[1][1]; i++) {
+            for (int j = region[0][0]; j < region[1][0]; j++) {
+                if (cellsInWorld[i][j] != null) {
+                    successfulCellList.add(cellsInWorld[i][j].getGenome());
+                }
+            }
+        }
+    }
+
+    private void purgeCellsInWorld() {
+        for (int i = 0; i < cellsInWorld.length; i++) {
+            for (int j = 0; j < cellsInWorld[i].length; j++) {
+                cellsInWorld[i][j] = null;
+            }
+        }
+    }
+
+    private void reproduceSuccessfulCells() {
+        for (int i = 1; i <= pop; i++) {
+            try {
+                addCell(worldRandom.nextInt(1, sizeX+1), worldRandom.nextInt(1,sizeY+1), successfulCellList.get(worldRandom.nextInt(0,successfulCellList.size()+1)));
+            }
+            catch(Exception IllegalArgumentException) {
+                i--;
             }
         }
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 5, "Steve", 7, 2);
+        World thisWorld = new World(10, 10, 5, "Steve", 7, 0.01, 2);
         //System.out.println(thisWorld.nothingAtExceptionCount);
-        displayWorld dWorld = new displayWorld(thisWorld);
+        DisplayWorld dWorld = new DisplayWorld(thisWorld);
         dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         dWorld.setSize(600, 400);
         dWorld.setLocation(200,200);

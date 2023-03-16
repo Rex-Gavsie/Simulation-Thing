@@ -1,110 +1,131 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.JPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.List;
 import java.util.Arrays;
+import java.awt.event.*;
 
-public class displayWorld extends JFrame {
+public class DisplayWorld extends JFrame implements KeyListener {
     int marg = 60;
     public World ourWorld;
 
-    public displayWorld(World inputWorld) {
+    JFrame dwFrame;
+    DisplayPanel simulatorPanel;
+    ButtonPanel buttonPanel;
+
+    public DisplayWorld() {
+        simulatorPanel = new DisplayPanel(new World());
+        
+        init();
+    }
+    
+    public DisplayWorld(World inputWorld) {
         ourWorld = inputWorld;
-        DisplayPanel simulatorPanel = new DisplayPanel(inputWorld);
-        simulatorPanel.heightInit(200); //Set a base height so its not tiny
+        simulatorPanel = new DisplayPanel(inputWorld);
         
+        init();
+    }
 
-        //Establish Text Fields
-        // JTextField heightChange = new JTextField(3);
-        // JTextField stepsPerClick = new JTextField(3);
-
-        // List<JTextField> textFields = Arrays.asList(stepsPerClick, heightChange);
-        // String[] labels = {"Steps: ", "height: "};
-
-        
-
-        //Buttons
-        JButton timeStepButton = new JButton("Step");
-        timeStepButton.addActionListener(e -> {
-            // ourWorld.printCells();
-            ourWorld.worldTimestep();
-            // ourWorld.printCells();
-            repaint();
-        });
-
+    private void init() {
+        dwFrame = new JFrame();
+        dwFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        dwFrame.addKeyListener(this);
+        dwFrame.setFocusable(true);
+        dwFrame.setSize(600, 600);
+        dwFrame.setLocation(0,0);
+        simulatorPanel.initVariables(dwFrame.getWidth(), (int)(dwFrame.getHeight()/1.6));
+        buttonPanel = new ButtonPanel(this);
 
         
-        
-        // Button Panel
-        // Box buttonBar = Box.createHorizontalBox();
-        // buttonBar.add(timeStepButton);
-        // buttonBar.add(setMargButton);
-        // buttonBar.add(setHeightButton);
-        List<JButton> buttonList = Arrays.asList(timeStepButton);
-
-        //Establish text field stuff
-        JPanel infoBar = new JPanel();
-        for (int i = 0; i < buttonList.size(); i++) {
-            Box vBox = Box.createVerticalBox();
-            // vBox.add(new JLabel(labels[i], null, JLabel.RIGHT));
-            // //vBox.add(Box.createHorizontalStrut(1));
-            // vBox.add(textFields.get(i));
-            // vBox.add(Box.createHorizontalStrut(1));
-            vBox.add(buttonList.get(i));
-            infoBar.add(vBox);
-        }
-
-        //Control Panel
-        Box controlPanel = Box.createVerticalBox();
-        // controlPanel.add(Box.createVerticalStrut(1));
-        controlPanel.add(infoBar);
-        // controlPanel.add(Box.createVerticalStrut(1));
-        // controlPanel.add(buttonBar);
-
-        Box vBox2 = Box.createVerticalBox();
+        // JPanel vBox2 = new JPanel();
+        Container c = dwFrame.getContentPane();
         // vBox2.add(Box.createVerticalStrut(1));
-        vBox2.add(simulatorPanel);
-        vBox2.add(controlPanel);
-        // vBox2.add(Box.createVerticalStrut(1));
-        // vBox2.add(Box.createVerticalStrut(1));
+        c.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridwidth = GridBagConstraints.RELATIVE;
+        constraints.gridheight = GridBagConstraints.RELATIVE;
+        constraints.gridx=0;
+        constraints.gridy=0;
+        constraints.weighty=1;
+        constraints.weightx=1;
+        c.add(simulatorPanel, constraints);
+
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weighty=0.1;
+        constraints.gridx = 0;
+        constraints.gridwidth = 4;
+        constraints.gridy = GridBagConstraints.RELATIVE;
+        constraints.gridheight=1;
+        c.add(buttonPanel, constraints);
+        
+        
         //Zoom
-        simulatorPanel.addMouseWheelListener(e -> {
+        dwFrame.addMouseWheelListener(e -> {
             // System.out.println("mWheel: ");
             // System.out.println(e);
             if (e.getPreciseWheelRotation() > 0) {
-                simulatorPanel.height++;
+                simulatorPanel.incrementHeight(1);
                 // System.out.println("++");
                 repaint();
+                // System.out.println(dwFrame.getFocusOwner());
             } else {
-                simulatorPanel.height--;
+                simulatorPanel.incrementHeight(-1);
                 // System.out.println("--");
                 repaint();
+                // System.out.println(dwFrame.getFocusOwner());
             }
         });
 
-
-        Container c = this.getContentPane();
-        c.add(vBox2);
+        
+        // c.add(vBox2);
+        dwFrame.addKeyListener(this);
+        buttonPanel.survivalZoneX0.addKeyListener(this);
+        buttonPanel.survivalZoneX1.addKeyListener(this);
+        buttonPanel.survivalZoneY0.addKeyListener(this);
+        buttonPanel.survivalZoneY1.addKeyListener(this);
+        dwFrame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                System.out.println("Event: " + componentEvent + "\n");
+            }
+        });
+        dwFrame.setVisible(true);
     }
 
-    public static void displayThisWorld(World inputWorld) {
-        displayWorld dWorld = new displayWorld(inputWorld);
-        dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        dWorld.setSize(600, 400);
-        dWorld.setLocation(200,200);
-        dWorld.setVisible(true);
+
+    //KEY LISTENER STUFF -----------------
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // System.out.println("Key Typed");
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        // System.out.println("Key Code: " + e.getKeyCode());
+        switch (e.getKeyCode()) {
+            case 37:
+                simulatorPanel.incrementMiddleX(-1);
+                break;
+            case 39:
+                simulatorPanel.incrementMiddleX(1); break;
+            case 38:
+                simulatorPanel.incrementMiddleY(-1); break;
+            case 40:
+                simulatorPanel.incrementMiddleY(1); break;
+        }
+        repaint();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // System.out.println("You pressed: " + e.getKeyChar());
     }
 
     public static void main(String[] args) {
-        World thisWorld = new World(10, 10, 10, "Steve", 5, 2);
-        displayWorld dWorld = new displayWorld(thisWorld);
-        dWorld.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        dWorld.setSize(600, 600);
-        dWorld.setLocation(0,0);
-        dWorld.setVisible(true);
+        World thisWorld = new World(10, 10, 10, "Steve", 5, 0.01, 2);
+        DisplayWorld dWorld = new DisplayWorld(thisWorld);
+        
 
 
         //DEBUG -----

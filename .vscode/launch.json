@@ -6,6 +6,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TestingStuff",
+            "request": "launch",
+            "mainClass": "TestingStuff",
+            "projectName": "Simulation-Thing_d5411bc8"
+        },
+        {
+            "type": "java",
+            "name": "ButtonPanel",
+            "request": "launch",
+            "mainClass": "ButtonPanel",
+            "projectName": "Simulation-Thing_d5411bc8"
+        },
+        {
+            "type": "java",
+            "name": "DisplayWorld",
+            "request": "launch",
+            "mainClass": "DisplayWorld",
+            "projectName": "Simulation-Thing_d5411bc8"
+        },
+        {
+            "type": "java",
+            "name": "keyListenerStuff",
+            "request": "launch",
+            "mainClass": "keyListenerStuff",
+            "projectName": "Simulation-Thing_d5411bc8"
+        },
+        {
+            "type": "java",
             "name": "displayWorld",
             "request": "launch",
             "mainClass": "displayWorld",

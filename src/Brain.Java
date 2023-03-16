@@ -139,6 +139,9 @@ public class Brain {
             String hexEnd = forloopGenome.substring(2, 4); //Hex for end nueron
             String hexWeight = forloopGenome.substring(4,6); //Hex for weight
             String bcBinary = Integer.toBinaryString(Integer.parseInt(forloopGenome.substring(6), 16)); //Binary for Bias and Correlation
+            while (bcBinary.length() < 8) {
+                bcBinary = '0'+bcBinary;
+            } 
             Double weight = 1.0;
             Double bias = 1.0;
 
